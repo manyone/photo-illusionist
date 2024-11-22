@@ -66,14 +66,11 @@ const Index = () => {
         prompt,
       });
       
-      const response = await fetch('https://lovable.dev/api/generate', {
+      const response = await fetch('/api/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Origin': window.location.origin,
-          'Access-Control-Allow-Origin': '*',
         },
-        credentials: 'include',
         body: JSON.stringify({
           image_url: selectedImage,
           prompt,
