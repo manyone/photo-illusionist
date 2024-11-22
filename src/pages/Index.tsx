@@ -78,7 +78,7 @@ const Index = () => {
         prompt,
       });
 
-      const result = await fal.run<FalInput, FalResponse>("illusion-diffusion", {
+      const result = await fal.run<FalInput, FalResponse>("110602490-illusion-diffusion/illusion-diffusion", {
         input: {
           image_url: selectedImage,
           prompt,
