@@ -29,7 +29,9 @@ const Index = () => {
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64String = reader.result as string;
-      setSelectedImage(base64String);
+      // Remove the data URL prefix to get just the base64 content
+      const base64Content = base64String.split(',')[1];
+      setSelectedImage(`data:image/jpeg;base64,${base64Content}`);
       setGeneratedImage(null);
       console.log("Image loaded successfully");
     };
