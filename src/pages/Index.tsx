@@ -87,7 +87,7 @@ const Index = () => {
         negative_prompt: "(worst quality, poor details:1.4), lowres, (artist name, signature, watermark:1.4), bad-artist-anime, bad_prompt_version2, bad-hands-5, ng_deepnegative_v1_75t",
         num_inference_steps: 40,
         control_guidance_end: 1,
-        controlnet_conditioning_scale: 1,
+        controlnet_conditioning_scale: 3,
       };
 
       const result = await fal.run<FalInput, FalResponse>("110602490-illusion-diffusion", {
