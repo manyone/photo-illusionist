@@ -7,18 +7,11 @@ import { LoadingState } from "@/components/LoadingState";
 import { useToast } from "@/components/ui/use-toast";
 import { Download, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import * as fal from "@fal-ai/serverless-client";
 
-interface FalResponse {
-  seed: number;
-  image: {
-    url: string;
-    width: number;
-    height: number;
-    file_name: string;
-    file_size: number;
-    content_type: string;
-  };
-}
+fal.config({
+  credentials: import.meta.env.VITE_FAL_KEY,
+});
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -60,29 +53,27 @@ const Index = () => {
 
     setIsLoading(true);
     setError(null);
+    
     try {
       console.log("Starting image generation with params:", {
         image_url: selectedImage,
         prompt,
       });
-      
-      const response = await fetch('/api/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+
+      const result = await fal.run("illusion-diffusion", {
+        input: {
           image_url: selectedImage,
           prompt,
-        }),
+          scheduler: "Euler",
+          image_size: "square_hd",
+          guidance_scale: 12,
+          negative_prompt: "(worst quality, poor details:1.4), lowres, (artist name, signature, watermark:1.4), bad-artist-anime, bad_prompt_version2, bad-hands-5, ng_deepnegative_v1_75t",
+          num_inference_steps: 40,
+          control_guidance_end: 1,
+          controlnet_conditioning_scale: 1,
+        },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Failed to generate image');
-      }
-
-      const result = await response.json() as FalResponse;
       console.log("Generation successful:", result);
       setGeneratedImage(result.image.url);
     } catch (error) {
