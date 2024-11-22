@@ -78,18 +78,20 @@ const Index = () => {
         prompt,
       });
 
+      const input: FalInput = {
+        image_url: selectedImage,
+        prompt,
+        scheduler: "Euler",
+        image_size: "square_hd",
+        guidance_scale: 12,
+        negative_prompt: "(worst quality, poor details:1.4), lowres, (artist name, signature, watermark:1.4), bad-artist-anime, bad_prompt_version2, bad-hands-5, ng_deepnegative_v1_75t",
+        num_inference_steps: 40,
+        control_guidance_end: 1,
+        controlnet_conditioning_scale: 1,
+      };
+
       const result = await fal.run<FalInput, FalResponse>("110602490-illusion-diffusion", {
-        input: {
-          image_url: selectedImage,
-          prompt,
-          scheduler: "Euler",
-          image_size: "square_hd",
-          guidance_scale: 12,
-          negative_prompt: "(worst quality, poor details:1.4), lowres, (artist name, signature, watermark:1.4), bad-artist-anime, bad_prompt_version2, bad-hands-5, ng_deepnegative_v1_75t",
-          num_inference_steps: 40,
-          control_guidance_end: 3,
-          controlnet_conditioning_scale: 1,
-        },
+        input,
       });
 
       if (!result || !result.image || !result.image.url) {
