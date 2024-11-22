@@ -5,7 +5,8 @@ import { ImageUploader } from "@/components/ImageUploader";
 import { ImageComparison } from "@/components/ImageComparison";
 import { LoadingState } from "@/components/LoadingState";
 import { useToast } from "@/components/ui/use-toast";
-import { Download } from "lucide-react";
+import { Download, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface FalResponse {
   seed: number;
@@ -24,6 +25,7 @@ const Index = () => {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleImageSelect = useCallback((file: File) => {
@@ -32,6 +34,7 @@ const Index = () => {
       const base64String = reader.result as string;
       setSelectedImage(base64String);
       setGeneratedImage(null);
+      setError(null);
       console.log("Image loaded successfully");
     };
     reader.onerror = () => {
@@ -56,6 +59,7 @@ const Index = () => {
     }
 
     setIsLoading(true);
+    setError(null);
     try {
       console.log("Starting image generation with params:", {
         image_url: selectedImage,
@@ -74,7 +78,8 @@ const Index = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate image');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to generate image');
       }
 
       const result = await response.json() as FalResponse;
@@ -82,9 +87,10 @@ const Index = () => {
       setGeneratedImage(result.image.url);
     } catch (error) {
       console.error("Generation failed:", error);
+      setError(error instanceof Error ? error.message : 'Failed to generate image');
       toast({
         title: "Generation failed",
-        description: "There was an error generating your image",
+        description: error instanceof Error ? error.message : 'There was an error generating your image',
         variant: "destructive",
       });
     } finally {
@@ -136,6 +142,13 @@ const Index = () => {
             </Button>
           </div>
         </div>
+
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
         {isLoading && (
           <LoadingState className="h-[500px]" />
