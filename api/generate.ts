@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     const { image_url, prompt } = req.body;
 
     fal.config({
-      credentials: process.env.FAL_KEY,
+      credentials: process.env.VITE_FAL_KEY,
     });
 
     const result = await fal.run("illusion-diffusion", {

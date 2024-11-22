@@ -66,7 +66,7 @@ const Index = () => {
         prompt,
       });
       
-      const response = await fetch('/api/generate', {
+      const response = await fetch('https://lovable.dev/api/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
