@@ -9,7 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Download } from "lucide-react";
 
 fal.config({
-  credentials: "YOUR_FAL_KEY", // Replace with your fal.ai API key
+  credentials: import.meta.env.VITE_FAL_KEY,
 });
 
 const Index = () => {
