@@ -12,6 +12,12 @@ fal.config({
   credentials: import.meta.env.VITE_FAL_KEY,
 });
 
+interface FalResponse {
+  images: Array<{
+    url: string;
+  }>;
+}
+
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
@@ -46,7 +52,7 @@ const Index = () => {
           prompt,
           guidance_scale: 12,
         },
-      });
+      }) as FalResponse;
 
       setGeneratedImage(result.images[0].url);
     } catch (error) {
