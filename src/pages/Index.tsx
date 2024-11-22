@@ -92,6 +92,10 @@ const Index = () => {
         },
       });
 
+      if (!result || !result.image || !result.image.url) {
+        throw new Error('Invalid response from API');
+      }
+
       console.log("Generation successful:", result);
       setGeneratedImage(result.image.url);
     } catch (error) {
