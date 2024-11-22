@@ -13,6 +13,18 @@ fal.config({
   credentials: import.meta.env.VITE_FAL_KEY,
 });
 
+interface FalInput {
+  image_url: string;
+  prompt: string;
+  scheduler: string;
+  image_size: string;
+  guidance_scale: number;
+  negative_prompt: string;
+  num_inference_steps: number;
+  control_guidance_end: number;
+  controlnet_conditioning_scale: number;
+}
+
 interface FalResponse {
   image: {
     url: string;
@@ -66,7 +78,7 @@ const Index = () => {
         prompt,
       });
 
-      const result = await fal.run<FalResponse>("illusion-diffusion", {
+      const result = await fal.run<FalInput, FalResponse>("illusion-diffusion", {
         input: {
           image_url: selectedImage,
           prompt,
