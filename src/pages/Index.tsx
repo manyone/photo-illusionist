@@ -13,6 +13,12 @@ fal.config({
   credentials: import.meta.env.VITE_FAL_KEY,
 });
 
+interface FalResponse {
+  image: {
+    url: string;
+  };
+}
+
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
@@ -60,7 +66,7 @@ const Index = () => {
         prompt,
       });
 
-      const result = await fal.run("illusion-diffusion", {
+      const result = await fal.run<FalResponse>("illusion-diffusion", {
         input: {
           image_url: selectedImage,
           prompt,
