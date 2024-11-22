@@ -28,11 +28,23 @@ const Index = () => {
   const handleImageSelect = useCallback((file: File) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setSelectedImage(reader.result as string);
+      const base64String = reader.result as string;
+      // Remove the data URL prefix to get just the base64 content
+      const base64Content = base64String.split(',')[1];
+      setSelectedImage(`data:image/jpeg;base64,${base64Content}`);
       setGeneratedImage(null);
+      console.log("Image loaded successfully");
+    };
+    reader.onerror = () => {
+      console.error("Error reading file");
+      toast({
+        title: "Error",
+        description: "Failed to load the image",
+        variant: "destructive",
+      });
     };
     reader.readAsDataURL(file);
-  }, []);
+  }, [toast]);
 
   const handleGenerate = async () => {
     if (!selectedImage || !prompt) {
@@ -46,6 +58,7 @@ const Index = () => {
 
     setIsLoading(true);
     try {
+      console.log("Starting image generation");
       const result = await fal.run("illusion-diffusion", {
         input: {
           image_url: selectedImage,
@@ -54,6 +67,7 @@ const Index = () => {
         },
       }) as FalResponse;
 
+      console.log("Generation successful", result);
       setGeneratedImage(result.images[0].url);
     } catch (error) {
       console.error("Generation failed:", error);
