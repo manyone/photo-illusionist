@@ -13,9 +13,15 @@ fal.config({
 });
 
 interface FalResponse {
-  images: Array<{
+  seed: number;
+  image: {
     url: string;
-  }>;
+    width: number;
+    height: number;
+    file_name: string;
+    file_size: number;
+    content_type: string;
+  };
 }
 
 const Index = () => {
@@ -56,19 +62,27 @@ const Index = () => {
 
     setIsLoading(true);
     try {
-      console.log("Starting image generation");
+      console.log("Starting image generation with params:", {
+        image_url: selectedImage,
+        prompt,
+      });
+      
       const result = await fal.run("illusion-diffusion", {
         input: {
           image_url: selectedImage,
           prompt,
+          scheduler: "Euler",
+          image_size: "square_hd",
           guidance_scale: 12,
-          num_inference_steps: 50,
-          seed: Math.floor(Math.random() * 1000000),
+          negative_prompt: "(worst quality, poor details:1.4), lowres, (artist name, signature, watermark:1.4), bad-artist-anime, bad_prompt_version2, bad-hands-5, ng_deepnegative_v1_75t",
+          num_inference_steps: 40,
+          control_guidance_end: 1,
+          controlnet_conditioning_scale: 1,
         },
       }) as FalResponse;
 
-      console.log("Generation successful", result);
-      setGeneratedImage(result.images[0].url);
+      console.log("Generation successful:", result);
+      setGeneratedImage(result.image.url);
     } catch (error) {
       console.error("Generation failed:", error);
       toast({
