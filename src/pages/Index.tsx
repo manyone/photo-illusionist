@@ -70,7 +70,10 @@ const Index = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Origin': window.location.origin,
+          'Access-Control-Allow-Origin': '*',
         },
+        credentials: 'include',
         body: JSON.stringify({
           image_url: selectedImage,
           prompt,
